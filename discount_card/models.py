@@ -14,7 +14,7 @@ class Purchase(models.Model):
     card = models.ForeignKey(
         "Card", on_delete=models.CASCADE, related_name="purchases"
     )
-    total_sum = models.FloatField()
+    total_sum = models.FloatField(blank=True, null=True)
     date = models.DateTimeField()
     items = models.ManyToManyField("Item")
 
