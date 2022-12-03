@@ -18,11 +18,11 @@
         There are no purchases with this card yet.<br>
     {% endif %}
 
-<button type="button">
-    <a href="{% url 'card_delete' card.pk %}">Delete</a>
-</button>
+    <button type="button">
+        <a href="{% url 'card_delete' card.pk %}">Delete</a>
+    </button>
 
-<button type="button">
-    <a href="{% url 'card_update' card.pk %}">Update status</a>
-</button>
+    <button type="button">
+        <a href="{% url 'card_update' card.pk %}">Update status</a>
+    </button>
 {% endblock %}
