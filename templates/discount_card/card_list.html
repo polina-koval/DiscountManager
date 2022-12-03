@@ -1,0 +1,4 @@
+{% for card in cards %}
+    <a href="{% url 'card_detail'  card.pk %}">{{ card.series }} {{ card.number }}</a>
+    <br>
+{% endfor %}
