@@ -1,8 +1,11 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{% for card in cards %}
-    <a href="{% url 'card_detail'  card.pk %}">{{ card.series }} {{ card.number }}</a>
-    <br>
-{% endfor %}
+    {% for card in cards %}
+        <div class="card" style="width: 18rem;">
+            <div class="card-header">
+                <a href="{% url 'card_detail'  card.pk %}">{{ card.series }} {{ card.number }}</a>
+            </div>
+        </div>
+    {% endfor %}
 {% endblock %}

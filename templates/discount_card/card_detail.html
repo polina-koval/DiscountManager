@@ -1,28 +1,30 @@
 {% extends 'base.html' %}
 
 {% block content %}
-
-    <h1>Series and number: </h1>{{ card.series }} {{ card.number }}<br>
-    <h1>Release date: </h1>{{ card.release_date|date:"d.m.Y H:i" }}<br>
-    <h1>Expiry date: </h1>{{ card.expiry_date|date:"d.m.Y H:i" }}<br>
-    <h1>Status: </h1>{{ card.status }}<br>
-    <h1>Purchases: </h1>
-    {%  if card.purchases.all %}
-        {% for purchase in card.purchases.all %}
-            <u> {{ purchase.date|date:"d.m.Y H:i" }} </u><br>
-            {% for item in purchase.items.all %}
-                {{ item.title }} ({{ item.amount }} pcs) {{ item.price }}$ <br>
-            {% endfor %}
-        {% endfor %}
-    {% else %}
-        There are no purchases with this card yet.<br>
-    {% endif %}
-
-    <button type="button">
-        <a href="{% url 'card_delete' card.pk %}">Delete</a>
-    </button>
-
-    <button type="button">
-        <a href="{% url 'card_update' card.pk %}">Update status</a>
-    </button>
+    <div class="card">
+        <div class="card-header">
+            {{ card.series }} {{ card.number }}
+        </div>
+        <div class="card-body">
+            <h5 class="card-title">Release
+                date: {{ card.release_date|date:"d.m.Y H:i" }}</h5>
+            <h5 class="card-title">Expiry
+                date: {{ card.expiry_date|date:"d.m.Y H:i" }}</h5>
+            <h5 class="card-title">Status: {{ card.status }}</h5>
+            <h5>Purchases: </h5>
+            {% if card.purchases.all %}
+                {% for purchase in card.purchases.all %}
+                    <u> {{ purchase.date|date:"d.m.Y H:i" }} </u><br>
+                    {% for item in purchase.items.all %}
+                        {{ item.title }} ({{ item.amount }} pcs)
+                        {{ item.price }}$ <br>
+                    {% endfor %}
+                {% endfor %}
+            {% else %}
+                <p class="card-text">There are no purchases with this card yet.</p><br>
+            {% endif %}
+            <a href="{% url 'card_delete' card.pk %}" class="btn btn-primary">Delete</a>
+            <a href="{% url 'card_update' card.pk %}" class="btn btn-primary">Update status</a>
+        </div>
+    </div>
 {% endblock %}
