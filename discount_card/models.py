@@ -23,14 +23,23 @@ class Purchase(models.Model):
     total_sum = models.FloatField(blank=True, null=True)
     date = models.DateTimeField()
     items = models.ManyToManyField("Item")
+    is_debited = models.BooleanField(default=False)
 
     def __str__(self):
         return str(self.card.number)
+
+    def debit_from_card(self):
+        """Write off the purchase amount from the card"""
+        if not self.is_debited:
+            self.card.total_sum -= self.total_sum
+            self.card.save()
+            self.is_debited = True
 
     def save(self, *args, **kwargs):
         if self.pk:
             total_sum = self.items.all().aggregate(Sum("price"))["price__sum"]
             self.total_sum = total_sum
+            self.debit_from_card()
         super().save(*args, **kwargs)
 
 
@@ -45,7 +54,7 @@ class Card(models.Model):
         validators=[MinLengthValidator(3)],
         help_text="Only 3 letters",
     )
-    number = models.IntegerField(help_text="Only 10 digits",)
+    number = models.IntegerField(help_text="Only 10 digits", )
     release_date = models.DateTimeField()
     expiry_date = models.DateTimeField()
     total_sum = models.FloatField(default=0)
@@ -70,7 +79,7 @@ class Card(models.Model):
 
     def check_card(self):
         """Call this method before every action with the map."""
-        if self.expiry_date > timezone.now():
+        if self.expiry_date < timezone.now():
             self.status = Card.Statuses.EXPIRED
             self.save()
 
