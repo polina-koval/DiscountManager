@@ -45,11 +45,7 @@ class Card(models.Model):
         validators=[MinLengthValidator(3)],
         help_text="Only 3 letters",
     )
-    number = models.IntegerField(
-        max_length=10,
-        validators=[MinLengthValidator(10)],
-        help_text="Only 10 digits",
-    )
+    number = models.IntegerField(help_text="Only 10 digits",)
     release_date = models.DateTimeField()
     expiry_date = models.DateTimeField()
     total_sum = models.FloatField(default=0)
