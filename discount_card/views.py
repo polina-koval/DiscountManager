@@ -1,3 +1,4 @@
+from django.db.models import Q
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
@@ -65,3 +66,23 @@ class CardUpdateView(UpdateView):
     def get_success_url(self):
         pk = self.kwargs["pk"]
         return reverse("card_detail", kwargs={"pk": pk})
+
+
+class SearchResultsView(ListView):
+    model = Card
+    template_name = "discount_card/search_result.html"
+    queryset = Card.objects.all()
+
+    def get_queryset(self):
+        query = self.request.GET.get("q")
+        print(query)
+        object_list = Card.objects.filter(
+            (
+                Q(series__icontains=query)
+                | Q(number__icontains=query)
+                | Q(release_date__icontains=query)
+                | Q(expiry_date__icontains=query)
+                | Q(status__icontains=query)
+            )
+        )
+        return object_list
