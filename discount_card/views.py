@@ -50,6 +50,12 @@ class CardDetail(DetailView):
     context_object_name = "card"
     template_name = "discount_card/card_detail.html"
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        card = context["card"]
+        card.check_card()
+        return context
+
 
 class CardDeleteView(DeleteView):
     model = Card
