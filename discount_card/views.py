@@ -75,7 +75,6 @@ class SearchResultsView(ListView):
 
     def get_queryset(self):
         query = self.request.GET.get("q")
-        print(query)
         object_list = Card.objects.filter(
             (
                 Q(series__icontains=query)
