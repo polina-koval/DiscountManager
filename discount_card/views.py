@@ -74,6 +74,7 @@ class SearchResultsView(ListView):
     queryset = Card.objects.all()
 
     def get_queryset(self):
+        """Search by series, number, release date, expiry_date, status"""
         query = self.request.GET.get("q")
         object_list = Card.objects.filter(
             (
