@@ -1,3 +1,7 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
 <h1>Series and number: </h1>{{ card.series }} {{ card.number }}<br>
 <h1>Release date: </h1>{{ card.release_date }}<br>
 <h1>Expiry date: </h1>{{ card.expiry_date }}<br>
@@ -10,3 +14,4 @@
 <button type="button">
     <a href="{% url 'card_update' card.pk %}">Update status</a>
 </button>
+{% endblock %}

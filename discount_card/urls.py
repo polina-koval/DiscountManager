@@ -9,7 +9,7 @@ from discount_card.views import (
 )
 
 urlpatterns = [
-    path("", CardCreate.as_view(), name="card_create"),
+    path("generate_cards/", CardCreate.as_view(), name="card_create"),
     path("cards/", CardListView.as_view(), name="card_list"),
     path("card/<pk>/", CardDetail.as_view(), name="card_detail"),
     path("card/<pk>/delete/", CardDeleteView.as_view(), name="card_delete"),
