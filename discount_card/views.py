@@ -1,7 +1,13 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.urls import reverse
-from django.views.generic import View
+from django.views.generic import (
+    DeleteView,
+    DetailView,
+    ListView,
+    UpdateView,
+    View,
+)
 
 from discount_card.forms import CardForm
 from discount_card.models import Card
@@ -25,3 +31,37 @@ class CardCreate(View):
                 )
             return HttpResponseRedirect(reverse("card_create"))
         return render(request, self.template_name, {"form": form})
+
+
+class CardListView(ListView):
+
+    model = Card
+    template_name = "discount_card/card_list.html"
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["cards"] = Card.objects.all()
+        return context
+
+
+class CardDetail(DetailView):
+    model = Card
+    context_object_name = "card"
+    template_name = "discount_card/card_detail.html"
+
+
+class CardDeleteView(DeleteView):
+    model = Card
+    template_name = "discount_card/card_delete.html"
+
+    def get_success_url(self):
+        return reverse("card_list")
+
+
+class CardUpdateView(UpdateView):
+    model = Card
+    fields = ["status"]
+
+    def get_success_url(self):
+        pk = self.kwargs["pk"]
+        return reverse("card_detail", kwargs={"pk": pk})
