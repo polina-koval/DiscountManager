@@ -1,7 +1,9 @@
 import random
 
 from dateutil.relativedelta import *
+from django.core.validators import MinLengthValidator
 from django.db import models
+from django.db.models import Sum
 from django.utils import timezone
 
 
@@ -23,7 +25,13 @@ class Purchase(models.Model):
     items = models.ManyToManyField("Item")
 
     def __str__(self):
-        return self.total_sum
+        return str(self.card.number)
+
+    def save(self, *args, **kwargs):
+        if self.pk:
+            total_sum = self.items.all().aggregate(Sum("price"))["price__sum"]
+            self.total_sum = total_sum
+        super().save(*args, **kwargs)
 
 
 class Card(models.Model):
@@ -32,11 +40,19 @@ class Card(models.Model):
         INACTIVE = "Inactive"
         EXPIRED = "Expired"
 
-    series = models.CharField(max_length=3)
-    number = models.IntegerField()
+    series = models.CharField(
+        max_length=3,
+        validators=[MinLengthValidator(3)],
+        help_text="Only 3 letters",
+    )
+    number = models.IntegerField(
+        max_length=10,
+        validators=[MinLengthValidator(10)],
+        help_text="Only 10 digits",
+    )
     release_date = models.DateTimeField()
     expiry_date = models.DateTimeField()
-    total_sum = models.FloatField()
+    total_sum = models.FloatField(default=0)
     status = models.CharField(
         max_length=30, choices=Statuses.choices, default=Statuses.INACTIVE
     )
@@ -55,6 +71,12 @@ class Card(models.Model):
             total_sum=0,
             status=Card.Statuses.INACTIVE,
         )
+
+    def check_card(self):
+        """Call this method before every action with the map."""
+        if self.expiry_date > timezone.now():
+            self.status = Card.Statuses.EXPIRED
+            self.save()
 
     def __str__(self):
         return f"{self.series}-{self.number}"
